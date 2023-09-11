@@ -1,0 +1,530 @@
+[
+    {
+        "id": "324da77bfeb7d6ed",
+        "type": "mqtt in",
+        "z": "70bf438766db379c",
+        "name": "",
+        "topic": "ruuvi/C2:DA:91:51:25:F7",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "443aee47b120a49b",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 290,
+        "y": 140,
+        "wires": [
+            [
+                "ebacb67cf2b77743"
+            ]
+        ]
+    },
+    {
+        "id": "fd9f38d8d7415a26",
+        "type": "function",
+        "z": "70bf438766db379c",
+        "name": "Ruuvi Hex conversion",
+        "func": "let str = msg.payload.data;\nconst data = {};\n\n//type\nlet part1 = \"0x\" + str[14] + str[15] ;\ndata.type = parseInt(part1);\n\n//temperature\nlet part2 = \"0x\" + str[16] + str[17] + str[18] + str[19];\nlet temperature = parseInt(part2);\n  if (temperature > 32767) {\n    temperature -= 65534;\n  }\ndata.temperature = temperature * 0.005;\n\n//humidity\nlet part3 = \"0x\" + str[20] + str[21] + str[22] + str[23];\ndata.humidity = parseInt(part3) / 400.0;\n\n//pressure\nlet part4 = \"0x\" + str[24] + str[25] + str[26] + str[27];\ndata.pressure = parseInt(part4) + 50000;\n\n//accelerometer\n//X\nlet part5 = \"0x\" + str[28] + str[29] + str[30] + str[31];\nlet accelerationX = parseInt(part5);\nif (accelerationX > 32767) accelerationX -= 65536; // two's complement\ndata.accelerationX = accelerationX /1000;\n//Y\nlet part6 = \"0x\" + str[32] + str[33] + str[34] + str[35];\nlet accelerationY = parseInt(part6);\nif (accelerationY > 32767) accelerationY -= 65536;\ndata.accelerationY = accelerationY /1000;\n//Z\nlet part7 = \"0x\" + str[36] + str[37] + str[38] + str[39];\nlet accelerationZ = parseInt(part7);\nif (accelerationZ > 32767) accelerationZ -= 65536; // two's complement\ndata.accelerationZ = accelerationZ /1000\n\n//Power\nlet part8 = \"0x\" + str[40] + str[41] + str[42] + str[43];\nlet power = parseInt(part8).toString(2);\nlet voltage = power.substr(0, 11);\nlet TXdbm = power.slice(-5);\ndata.voltage = (parseInt(voltage, 2) + 1600) / 1000;\ndata.TXdbm = (parseInt(TXdbm, 2) & 0b11111) * 2 - 40;\n\n//movementCounter\nlet part9 = \"0x\" + str[44] + str[45];\ndata.movementCounter = parseInt(part9);\n\n//measurementSequenceNumber\nlet part10 = \"0x\" + str[46] + str[47] + str[48] + str[49];\ndata.measurementSequenceNumber = parseInt(part10);\n\n//mac\nlet part11 = str.slice(-12);\ndata.mac = part11;\n\nmsg.payload = data\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 240,
+        "wires": [
+            [
+                "60b0a68e683c79c9"
+            ]
+        ]
+    },
+    {
+        "id": "cfb6a14adddababb",
+        "type": "debug",
+        "z": "70bf438766db379c",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "ebacb67cf2b77743",
+        "type": "switch",
+        "z": "70bf438766db379c",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "hask",
+                "v": "data",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 230,
+        "y": 200,
+        "wires": [
+            [
+                "fd9f38d8d7415a26"
+            ]
+        ]
+    },
+    {
+        "id": "b83aed58bab0f421",
+        "type": "function",
+        "z": "70bf438766db379c",
+        "name": "Movement",
+        "func": "let movementCounter = msg.payload.movementCounter\nlet accelerationX = msg.payload.accelerationX\nlet accelerationY = msg.payload.accelerationY\nlet accelerationZ = msg.payload.accelerationZ\nmsg.payload.accelerationZ\nmsg.payload = {}\nmsg.payload.movementCounter = movementCounter\nmsg.payload.accelerationX = accelerationX\nmsg.payload.accelerationY = accelerationY\nmsg.payload.accelerationZ = accelerationZ\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 250,
+        "y": 320,
+        "wires": [
+            [
+                "5bd93845b30e68a5"
+            ]
+        ]
+    },
+    {
+        "id": "5bd93845b30e68a5",
+        "type": "rbe",
+        "z": "70bf438766db379c",
+        "name": "",
+        "func": "deadbandEq",
+        "gap": "150%",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.accelerationZ",
+        "topi": "topic",
+        "x": 240,
+        "y": 360,
+        "wires": [
+            [
+                "c986f33d98c63985",
+                "cfb6a14adddababb"
+            ]
+        ]
+    },
+    {
+        "id": "ce2dbaf2b1ac1d87",
+        "type": "ha-binary-sensor",
+        "z": "70bf438766db379c",
+        "name": "Keppra Given",
+        "entityConfig": "4ce1aeb715482cda",
+        "version": 0,
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [
+            {
+                "property": "Given",
+                "value": "payload",
+                "valueType": "msg"
+            }
+        ],
+        "inputOverride": "allow",
+        "outputProperties": [],
+        "x": 920,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aba49433551fe5d0",
+        "type": "inject",
+        "z": "70bf438766db379c",
+        "name": "Midday Reset",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 12 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 680,
+        "y": 360,
+        "wires": [
+            [
+                "ce2dbaf2b1ac1d87"
+            ]
+        ]
+    },
+    {
+        "id": "de61f47cb62425cf",
+        "type": "inject",
+        "z": "70bf438766db379c",
+        "name": "Midnight Reset",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "false",
+        "payloadType": "bool",
+        "x": 680,
+        "y": 400,
+        "wires": [
+            [
+                "ce2dbaf2b1ac1d87"
+            ]
+        ]
+    },
+    {
+        "id": "fdc7d90ca42d770c",
+        "type": "function",
+        "z": "70bf438766db379c",
+        "name": "function 4",
+        "func": "if (msg.payload < 0) { \n    msg.payload = true;\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 320,
+        "wires": [
+            [
+                "ce2dbaf2b1ac1d87"
+            ]
+        ]
+    },
+    {
+        "id": "c986f33d98c63985",
+        "type": "change",
+        "z": "70bf438766db379c",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.accelerationZ",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 360,
+        "wires": [
+            [
+                "fdc7d90ca42d770c"
+            ]
+        ]
+    },
+    {
+        "id": "92163f7e96a700a7",
+        "type": "api-current-state",
+        "z": "70bf438766db379c",
+        "name": "Keppra",
+        "server": "ee8cdebf.dbf2e",
+        "version": 3,
+        "outputs": 1,
+        "halt_if": "",
+        "halt_if_type": "str",
+        "halt_if_compare": "is",
+        "entity_id": "binary_sensor.nodered_4ce1aeb715482cda",
+        "state_type": "str",
+        "blockInputOverrides": false,
+        "outputProperties": [
+            {
+                "property": "payload",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entityState"
+            },
+            {
+                "property": "data",
+                "propertyType": "msg",
+                "value": "",
+                "valueType": "entity"
+            }
+        ],
+        "for": "0",
+        "forType": "num",
+        "forUnits": "minutes",
+        "override_topic": false,
+        "state_location": "payload",
+        "override_payload": "msg",
+        "entity_location": "data",
+        "override_data": "msg",
+        "x": 480,
+        "y": 520,
+        "wires": [
+            [
+                "48e4552b6cb8eb7e"
+            ]
+        ]
+    },
+    {
+        "id": "9b2efdd1a9c12553",
+        "type": "inject",
+        "z": "70bf438766db379c",
+        "name": "Morning check",
+        "props": [],
+        "repeat": "",
+        "crontab": "30 08 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 300,
+        "y": 520,
+        "wires": [
+            [
+                "92163f7e96a700a7"
+            ]
+        ]
+    },
+    {
+        "id": "99d55471459c5e3e",
+        "type": "http request",
+        "z": "70bf438766db379c",
+        "name": "NTFY",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "192.168.1.22:90/keppra",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [
+            {
+                "keyType": "other",
+                "keyValue": "Priority",
+                "valueType": "other",
+                "valueValue": "Max"
+            },
+            {
+                "keyType": "other",
+                "keyValue": "Title",
+                "valueType": "other",
+                "valueValue": "Bottle Sensor Alert!"
+            }
+        ],
+        "x": 930,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "48e4552b6cb8eb7e",
+        "type": "switch",
+        "z": "70bf438766db379c",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "off",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "unknown",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 630,
+        "y": 520,
+        "wires": [
+            [
+                "243c104395cae2c9"
+            ],
+            [
+                "243c104395cae2c9"
+            ]
+        ]
+    },
+    {
+        "id": "243c104395cae2c9",
+        "type": "function",
+        "z": "70bf438766db379c",
+        "name": "Message",
+        "func": "msg.payload =\"Check was Keppra Given!\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 520,
+        "wires": [
+            [
+                "99d55471459c5e3e"
+            ]
+        ]
+    },
+    {
+        "id": "6f333e791f1a756f",
+        "type": "inject",
+        "z": "70bf438766db379c",
+        "name": "Evening Check",
+        "props": [],
+        "repeat": "",
+        "crontab": "30 20 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 300,
+        "y": 560,
+        "wires": [
+            [
+                "92163f7e96a700a7"
+            ]
+        ]
+    },
+    {
+        "id": "60b0a68e683c79c9",
+        "type": "switch",
+        "z": "70bf438766db379c",
+        "name": "",
+        "property": "payload.mac",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "C2DA915125F7",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 230,
+        "y": 280,
+        "wires": [
+            [
+                "b83aed58bab0f421"
+            ]
+        ]
+    },
+    {
+        "id": "443aee47b120a49b",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "192.168.1.23",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "4ce1aeb715482cda",
+        "type": "ha-entity-config",
+        "server": "ee8cdebf.dbf2e",
+        "deviceConfig": "48ea1d784658b69a",
+        "name": "Keppra Given",
+        "version": "6",
+        "entityType": "binary_sensor",
+        "haConfig": [
+            {
+                "property": "name",
+                "value": "keppra"
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "entity_category",
+                "value": ""
+            },
+            {
+                "property": "entity_picture",
+                "value": ""
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            }
+        ],
+        "resend": false,
+        "debugEnabled": false
+    },
+    {
+        "id": "ee8cdebf.dbf2e",
+        "type": "server",
+        "name": "Home Assistant",
+        "version": 5,
+        "addon": true,
+        "rejectUnauthorizedCerts": true,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": false,
+        "cacheJson": true,
+        "heartbeat": true,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": "at: ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "h23",
+        "statusTimeFormat": "h:m",
+        "enableGlobalContextStore": true
+    },
+    {
+        "id": "48ea1d784658b69a",
+        "type": "ha-device-config",
+        "name": "Keppra",
+        "hwVersion": "",
+        "manufacturer": "Node-RED",
+        "model": "",
+        "swVersion": ""
+    }
+]
