@@ -11,8 +11,18 @@ The project may be easily modified for any medication, but the 3d prints were ma
   - Uses a RuuviTag BLE sensor to sense if bottle has been tipped over to load syringe.
   - 3D printed eclosure to attach BLE tag to bottom of Keppra bottle. 
 
+## 3D printing
 
-
+Current STL model files are a fraction too small and need to be printed at 102% to fit Keppra Bottle snugly.
 ![Bottle Sensor](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle%20Sensor.png?raw=true)
 ![Bottle](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle.png?raw=true)
 ![RuuviTag](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/RuuviTag.png?raw=true)
+
+## Node-Red
+
+## Ruvitag
+
+
+## NTFY
+This project depends on self hosted  [NTFY](https://docs.ntfy.sh/install/) instance for notifications.
+But can easily be replaced with any other notification service.
