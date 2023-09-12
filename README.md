@@ -1,5 +1,6 @@
 # Smart-Medicine-Bottle
-RuuviTag Medication Reminder - For liquid Keppra Epilepsy Medication
+RuuviTag Medication Reminder - For liquid Keppra Epilepsy Medication. <br>
+The project may be easily modified for any medication, but the 3d prints were made for this particular bottle size.
 
 ### Disclaimer: This project depends on opensource software and hardware that is at best hobbiest grade and should not be considered medical grade.
 
