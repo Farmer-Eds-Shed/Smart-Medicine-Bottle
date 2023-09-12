@@ -12,8 +12,9 @@ The project may be easily modified for any medication, but the 3d prints were ma
   - 3D printed eclosure to attach BLE tag to bottom of Keppra bottle. 
 
 ## 3D printing
-3D model was generated using the free version of [SketchUp](https://www.sketchup.com/plans-and-pricing/sketchup-free)
-The current [STL model](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle%20sensor%20(1).stl) file is a fraction too small and needs to be printed at 102% to fit Keppra Bottle snugly.
+3D model was generated using the free version of [SketchUp](https://www.sketchup.com/plans-and-pricing/sketchup-free) <br>
+The current [STL model](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle%20sensor%20(1).stl) file is a fraction too small and needs to be printed at 102% to fit Keppra Bottle snugly. <br> 
+<br>
 ![Bottle Sensor](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle%20Sensor.png?raw=true)
 ![Bottle](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle.png?raw=true)
 ![RuuviTag](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/RuuviTag.png?raw=true)
