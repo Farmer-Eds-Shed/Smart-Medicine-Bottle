@@ -1,6 +1,10 @@
 # Smart-Medicine-Bottle
 RuuviTag Medication Reminder - For liquid Keppra Epilepsy Medication
 
+### Disclaimer: This project depends on opensource software and hardware that is at best hobbiest grade and should not be considered medical grade.
+
+
+## Features:
 - A Node-Red flow for Home Assistant
   - sends a notification via NTFY if medication has not been given by a certain time.
   - Uses a RuuviTag BLE sensor to sense if bottle has been tipped over to load syringe.
@@ -9,3 +13,5 @@ RuuviTag Medication Reminder - For liquid Keppra Epilepsy Medication
 
 
 ![Bottle Sensor](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle%20Sensor.png?raw=true)
+![Bottle](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/Bottle.png?raw=true)
+![RuuviTag](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/RuuviTag.png?raw=true)
