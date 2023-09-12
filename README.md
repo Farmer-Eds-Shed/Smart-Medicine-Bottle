@@ -21,7 +21,7 @@ Current STL model files are a fraction too small and need to be printed at 102% 
 ## Node-Red
 
 ## Ruvitag
-
+This project uses the Z axis accelerometor of a RuuviTag to determine orintation. Accelerometers are not available with the RuuviTag Home Assistant integration so another gateway device is needed. I am using [Ruuvi-Go-Gateway](https://github.com/Scrin/ruuvi-go-gateway) on Raspberry Pi which emulates the offical Ruuvi Gateway. 
 
 ## NTFY
 This project depends on self hosted  [NTFY](https://docs.ntfy.sh/install/) instance for notifications.
