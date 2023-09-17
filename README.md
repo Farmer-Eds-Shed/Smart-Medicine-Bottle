@@ -32,8 +32,12 @@ The [Node-Red flow](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blo
 ![Node-Red](https://github.com/Farmer-Eds-Shed/Smart-Medicine-Bottle/blob/main/node-red.png?raw=true)
 
 ## Ruvitag
-This project uses the Z axis accelerometor of a RuuviTag to determine orintation. Accelerometers are not available with the RuuviTag Home Assistant integration so another gateway device is needed. I am using [Ruuvi-Go-Gateway](https://github.com/Scrin/ruuvi-go-gateway) on Raspberry Pi which emulates the offical [Ruuvi Gateway](https://ruuvi.com/gateway/). 
+This project uses the Z axis accelerometor of a RuuviTag to determine orintation.  <br>
+Accelerometers are not available with the RuuviTag Home Assistant integration so another gateway device is needed. <br>
+[Ruuvi-Go-Gateway](https://github.com/Scrin/ruuvi-go-gateway) emulates the offical [Ruuvi Gateway](https://ruuvi.com/gateway/) and is also available as a Home Assitant Addon [here:](https://github.com/Farmer-Eds-Shed/Home-Assistant-Addon-Repo)
+
 
 ## NTFY
 This project depends on self hosted  [NTFY](https://docs.ntfy.sh/install/) instance for notifications.
-But can easily be replaced with any other notification service.
+But can easily be replaced with any other notification service. <br>
+A Home Assitant Addon is available [here:](https://github.com/Farmer-Eds-Shed/Home-Assistant-Addon-Repo)
